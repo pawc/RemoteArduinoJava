@@ -1,6 +1,7 @@
 package pl.pawc.arduino.server;
 
 import java.net.Socket;
+import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
@@ -27,6 +28,10 @@ public class ClientConnection implements Runnable{
                 System.out.println("Received an object");
                 serverListener.sendToAll(obj);
                 System.out.println("The new object has been sent to all");      
+            }
+            catch(SocketException e){
+                serverListener.getList().remove(this);
+                break;
             }
             catch(IOException | ClassNotFoundException e){
                 e.printStackTrace();
