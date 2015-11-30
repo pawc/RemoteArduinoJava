@@ -28,9 +28,7 @@ public class ServerListener implements Runnable{
                 System.out.println("Awaiting connections");
                 Socket socket = serverSocket.accept();
                 System.out.println("New incoming connection from "+socket.toString());
-                ClientConnection clientConnection = new ClientConnection(socket, this);
-                System.out.println("New thread has been created");
-                clientConnection.run();
+                new Thread(new ClientConnection(socket, this)).start();
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -42,6 +40,7 @@ public class ServerListener implements Runnable{
     public void sendToAll(Object obj) throws IOException{
         for(ClientConnection clientConnection : list){
             clientConnection.getObjectOut().writeObject(obj);
+            clientConnection.getObjectOut().flush();
         }   
     }    
 

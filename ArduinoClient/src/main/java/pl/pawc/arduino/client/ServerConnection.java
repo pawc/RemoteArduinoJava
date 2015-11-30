@@ -24,17 +24,12 @@ public class ServerConnection implements Runnable{
     }
 
     public void run(){
-        Scanner sc = new Scanner(System.in);
         while(true){
             try{
-               String line = sc.nextLine();
-               int i = Integer.parseInt(line);
-               Message message = new Message(i);
-               objectOut.writeObject(message);
-               objectOut.flush();
-               System.out.println("Message has been sent");
+                Message message = (Message) objectIn.readObject();
+                System.out.println("Read: "+message.getI());
             }
-            catch(IOException e){
+            catch(IOException | ClassNotFoundException e){
                 e.printStackTrace();
                 break;
             }

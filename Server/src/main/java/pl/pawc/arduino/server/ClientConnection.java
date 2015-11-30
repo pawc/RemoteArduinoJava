@@ -12,20 +12,21 @@ public class ClientConnection implements Runnable{
     private ObjectOutputStream objectOut;
 
     public ClientConnection(Socket socket, ServerListener serverListener) throws IOException{
+        this.serverListener = serverListener;
         System.out.println("creating streams for the new client");
-        objectIn = new ObjectInputStream(socket.getInputStream());
         objectOut = new ObjectOutputStream(socket.getOutputStream());
+        objectOut.flush();
+        objectIn = new ObjectInputStream(socket.getInputStream());
         serverListener.getList().add(this);       
     }
  
     public void run(){
         while(true){
             try{
-                if(objectIn.available()>0){
-                    System.out.println("Received an object");
-                    serverListener.sendToAll(objectIn.readObject());
-                    System.out.println("The new object has been sent to all");
-                }
+                Object obj = objectIn.readObject();
+                System.out.println("Received an object");
+                serverListener.sendToAll(obj);
+                System.out.println("The new object has been sent to all");      
             }
             catch(IOException | ClassNotFoundException e){
                 e.printStackTrace();
