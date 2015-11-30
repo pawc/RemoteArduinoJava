@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="134.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="connectButton" layoutX="37.0" layoutY="14.0" mnemonicParsing="false" text="Connect" />
+      <RadioButton fx:id="LEDswitch" layoutX="22.0" layoutY="55.0" mnemonicParsing="false" text="LED switch" />
+   </children>
+</AnchorPane>
