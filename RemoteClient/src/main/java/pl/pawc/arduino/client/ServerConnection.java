@@ -12,13 +12,23 @@ public class ServerConnection{
 
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
-    
-    public ServerConnection(int port, String host) throws IOException{
+    private boolean connected;    
+
+    public ServerConnection(int port, String host) throws Exception{
+        connected = false;
         Socket socket = new Socket(host, port);
+        System.out.println("Socket created");
         objectOut = new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("ObjectOutputStream created");
         objectOut.flush();
-        objectIn = new ObjectInputStream(socket.getInputStream());
+        System.out.println("and flushed");
+        //objectIn = new ObjectInputStream(socket.getInputStream());
+        connected = true;
         System.out.println("Server connection successfully created");
+    }
+
+    public boolean isConnected(){
+        return connected;
     }
 
     public void sendMessage(int i){
@@ -33,6 +43,10 @@ public class ServerConnection{
                 return;
             }
             catch(NumberFormatException e){
+                e.printStackTrace();
+                return;
+            }
+            catch(NullPointerException e){
                 e.printStackTrace();
                 return;
             }  

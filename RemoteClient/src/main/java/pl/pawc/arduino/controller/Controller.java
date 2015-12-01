@@ -13,16 +13,24 @@ public class Controller{
     @FXML Button connectButton;
     @FXML RadioButton LEDswitch;
     private ServerConnection serverConnection;
-    private boolean connected = false;
+    private boolean connected;
+
+    public Controller(){
+    serverConnection = null;
+    }
 
     public void initialize(){
     
         LEDswitch.setOnAction(event->{
-            if(!connected){
-            System.out.println("You are not connected to the server");
-            LEDswitch.setSelected(false);
-            return;
+            try{
+                serverConnection.isConnected();
             }
+            catch(NullPointerException e){
+                System.out.println("You are not connected to the server");
+                LEDswitch.setSelected(false);
+                return;
+            }
+            if(!serverConnection.isConnected()) return;
             if(LEDswitch.isSelected()){
                 serverConnection.sendMessage(1);
             }
@@ -35,19 +43,20 @@ public class Controller{
         connectButton.setOnAction(event->{
             try{
                 if(connectButton.getText().equals("Connect")){
-                    serverConnection = new ServerConnection(6000, "kritsit.ddns.net");
+                    serverConnection = new ServerConnection(443, "localhost");
                     connectButton.setText("Disconnect");
-                    connected = true;
                 }
                 if(connectButton.getText().equals("Disconnect")){
                     serverConnection = null;
                     connectButton.setText("Connect");
-                    connected = false;
                 }
             }
             catch(IOException e){
                 e.printStackTrace();   
             }
+            catch(Exception e){
+                e.printStackTrace();
+            }            
         });
 
     }
