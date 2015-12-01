@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import java.util.Scanner;
-
 import pl.pawc.arduino.shared.Message;
 
-public class ServerConnection implements Runnable{
+public class ServerConnection{
 
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
@@ -23,12 +21,9 @@ public class ServerConnection implements Runnable{
         System.out.println("Server connection successfully created");
     }
 
-    public void run(){
-        Scanner sc = new Scanner(System.in);
+    public void sendMessage(int i){
         while(true){
             try{
-               String line = sc.nextLine();
-               int i = Integer.parseInt(line);
                Message message = new Message(i);
                objectOut.writeObject(message);
                objectOut.flush();
