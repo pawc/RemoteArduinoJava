@@ -5,12 +5,14 @@ import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
+import java.io.EOFException;
 
 public class ClientConnection implements Runnable{
     
     private ServerListener serverListener;
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
+    private String toString;
 
     public ClientConnection(Socket socket, ServerListener serverListener) throws IOException{
         this.serverListener = serverListener;
@@ -18,7 +20,8 @@ public class ClientConnection implements Runnable{
         objectOut = new ObjectOutputStream(socket.getOutputStream());
         objectOut.flush();
         objectIn = new ObjectInputStream(socket.getInputStream());
-        serverListener.getList().add(this);       
+        serverListener.getList().add(this);
+        toString = socket.getInetAddress().toString();       
     }
  
     public void run(){
@@ -28,6 +31,10 @@ public class ClientConnection implements Runnable{
                 System.out.println("Received an object");
                 serverListener.sendToAll(obj);
                 System.out.println("The new object has been sent to all");      
+            }
+            catch(EOFException e){
+                serverListener.getList().remove(this);
+                break;
             }
             catch(SocketException e){
                 serverListener.getList().remove(this);
@@ -52,6 +59,10 @@ public class ClientConnection implements Runnable{
 
     public ObjectOutputStream getObjectOut(){
         return objectOut;
+    }
+
+    public String toString(){
+        return toString;
     }
 
 }
