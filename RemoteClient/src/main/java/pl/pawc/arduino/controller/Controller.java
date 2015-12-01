@@ -4,61 +4,84 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 
-import pl.pawc.arduino.client.ServerConnection;
+import pl.pawc.arduino.shared.Message;
 
 import java.io.IOException;
 
+import java.net.Socket;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+
 public class Controller{
 
-    @FXML Button connectButton;
-    @FXML RadioButton LEDswitch;
-    private ServerConnection serverConnection;
-    private boolean connected;
+    private @FXML Button connectButton;
+    private @FXML RadioButton LEDswitch;
 
-    public Controller(){
-    serverConnection = null;
-    }
+    private boolean connected;
+    private ObjectOutputStream objOut;
+    private ObjectInputStream objIn;
+    private Socket socket;
 
     public void initialize(){
     
         LEDswitch.setOnAction(event->{
-            try{
-                serverConnection.isConnected();
-            }
-            catch(NullPointerException e){
-                System.out.println("You are not connected to the server");
-                LEDswitch.setSelected(false);
-                return;
-            }
-            if(!serverConnection.isConnected()) return;
             if(LEDswitch.isSelected()){
-                serverConnection.sendMessage(1);
+                sendMessage(1);
             }
             if(!LEDswitch.isSelected()){
-                serverConnection.sendMessage(0);
+                sendMessage(0);
             }
         });
 
 
         connectButton.setOnAction(event->{
+          if(!connected){
             try{
-                if(connectButton.getText().equals("Connect")){
-                    serverConnection = new ServerConnection(443, "localhost");
-                    connectButton.setText("Disconnect");
-                }
-                if(connectButton.getText().equals("Disconnect")){
-                    serverConnection = null;
-                    connectButton.setText("Connect");
-                }
+                socket = new Socket("localhost", 443);
+                objOut = new ObjectOutputStream(socket.getOutputStream());
+                objOut.flush();
+                objIn = new ObjectInputStream(socket.getInputStream());
+                connected = true;
+                connectButton.setText("Disconnect");
             }
             catch(IOException e){
-                e.printStackTrace();   
+                e.printStackTrace();
             }
-            catch(Exception e){
+          }
+          else{
+            try{
+                objOut.close();
+                objIn.close();
+                socket.close();
+                connected=false;
+                connectButton.setText("Connect");
+                System.out.println("Disconnected from the server");
+            }
+            catch(IOException e){
                 e.printStackTrace();
             }            
+          }           
+
         });
 
+    }
+
+    public void sendMessage(int i){
+        if(connected){
+            Message message = new Message(i);
+            try{        
+                objOut.writeObject(message);
+                objOut.flush();
+            }
+            catch(IOException e){
+                e.printStackTrace();
+                return;
+            }
+            System.out.println("Message has been sent: "+i);
+        }
+        else{
+            System.out.println("You is not connected");
+        }
     }
 
 }
