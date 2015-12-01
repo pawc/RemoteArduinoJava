@@ -24,14 +24,15 @@ public class ServerConnection implements Runnable{
     
     public ServerConnection(int port, String host) throws IOException{
         Socket socket = new Socket(host, port);
-        //objectOut = new ObjectOutputStream(socket.getOutputStream());
-        //objectOut.flush();
+        objectOut = new ObjectOutputStream(socket.getOutputStream());
+        objectOut.flush();
         objectIn = new ObjectInputStream(socket.getInputStream());
         System.out.println("Server connection successfully created");
     }
 
     public void run(){
         setupSerialConnection();
+        System.out.println("Entering main loop");
         while(true){
             try{
                 Message message = (Message) objectIn.readObject();
