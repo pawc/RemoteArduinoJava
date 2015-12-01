@@ -22,7 +22,6 @@ public class ServerConnection{
     }
 
     public void sendMessage(int i){
-        while(true){
             try{
                Message message = new Message(i);
                objectOut.writeObject(message);
@@ -31,13 +30,12 @@ public class ServerConnection{
             }
             catch(IOException e){
                 e.printStackTrace();
-                break;
+                return;
             }
             catch(NumberFormatException e){
                 e.printStackTrace();
-                continue;
-            }
-        }
+                return;
+            }  
     }   
 
 }
