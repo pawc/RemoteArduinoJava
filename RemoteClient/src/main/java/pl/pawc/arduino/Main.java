@@ -42,12 +42,13 @@ public class Main extends Application {
                         switch(event.getCode().toString()){
                         case "LEFT" : controller.sendMessage(2); break;
                         case "RIGHT" : controller.sendMessage(3); break;
+                        case "SPACE" : controller.sendMessage(4); break;
                         }
                     }
                     else{
                         System.out.println("You are not connected to the server");
                     }
-                    //System.out.println("Pressed: "+event.getCode());
+                    System.out.println("Pressed: "+event.getCode());
                 });
 
                 primaryStage.setResizable(false);
