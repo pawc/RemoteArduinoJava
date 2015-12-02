@@ -1,21 +1,35 @@
 #include <Servo.h>
 int data = -1;
+Servo myservo;
+int pos = 90;
 
 void setup(){
-  Serial.begin(9200);
+  Serial.begin(9600);
   pinMode(8, OUTPUT);
+  myservo.attach(10);
+  myservo.write(pos);
 }
 
 void loop(){
 
   if (Serial.available() > 0){
     data = Serial.read();
-    if(data==1){
+    if(data==0){
     	digitalWrite(8, HIGH);
     }
-    if(data==0){
+    if(data==1){
     	digitalWrite(8, LOW);
     }
+
+    if(data=3){
+    	pos+=10;
+    	myservo.write(pos);
+    }
+    if(data==2){
+    	pos-=10;
+    	myservo.write(pos);
+    }
+    
   }
 
 }
