@@ -66,6 +66,10 @@ public class Controller{
 
     }
 
+    public boolean getConnected(){
+        return connected;
+    }
+
     public void sendMessage(int i){
         if(connected){
             Message message = new Message(i);

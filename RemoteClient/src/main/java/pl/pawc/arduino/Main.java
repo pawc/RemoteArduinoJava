@@ -36,7 +36,20 @@ public class Main extends Application {
 
                 primaryStage.setTitle("Controlls");
                 Scene scene = new Scene(anchorPane);
-                scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> System.out.println("Pressed: "+event.getCode()));
+
+                scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                    if(controller.getConnected()){ 
+                        switch(event.getCode().toString()){
+                        case "LEFT" : controller.sendMessage(2); break;
+                        case "RIGHT" : controller.sendMessage(3); break;
+                        }
+                    }
+                    else{
+                        System.out.println("You are not connected to the server");
+                    }
+                    //System.out.println("Pressed: "+event.getCode());
+                });
+
                 primaryStage.setResizable(false);
                 primaryStage.setScene(scene);
                 primaryStage.show();
