@@ -15,19 +15,19 @@ void loop(){
 
   if (Serial.available() > 0){
     data = Serial.read();
-    if(data==0){
+    if(data==1){
     	digitalWrite(8, HIGH);
     }
-    if(data==1){
+    if(data==0){
     	digitalWrite(8, LOW);
     }
 
-    if(data=3){
-    	pos+=10;
+    if(data==2){
+    	pos+=20;
     	myservo.write(pos);
     }
-    if(data==2){
-    	pos-=10;
+    if(data==3){
+    	pos-=20;
     	myservo.write(pos);
     }
     
