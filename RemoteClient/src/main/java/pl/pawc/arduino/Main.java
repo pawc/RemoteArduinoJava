@@ -42,7 +42,7 @@ public class Main extends Application {
                         switch(event.getCode().toString()){
                         case "LEFT" : controller.sendMessage(2); break;
                         case "RIGHT" : controller.sendMessage(3); break;
-                        case "SPACE" : controller.sendMessage(4); break;
+                        case "ENTER" : controller.sendMessage(4); break;
                         }
                     }
                     else{
