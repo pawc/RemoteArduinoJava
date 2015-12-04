@@ -21,7 +21,9 @@ public class ServerConnection implements Runnable{
     private OutputStream outputStream = null;
     private DataOutputStream dataOutputStream;    
 
-    public ServerConnection(int port, String host) throws IOException{
+    public ServerConnection(int port, String host, int arduinoPort, String arduinoAddress) throws IOException{
+        this.arduinoAddress = arduinoAddress;
+        this.arduinoPort = arduinoPort;
         Socket socket = new Socket(host, port);
         objectOut = new ObjectOutputStream(socket.getOutputStream());
         objectOut.flush();
