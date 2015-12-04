@@ -8,20 +8,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.io.DataOutputStream;
 
 import pl.pawc.arduino.shared.Message;
 
 public class ServerConnection implements Runnable{
 
+    private String arduinoAddress;
+    private int arduinoPort;
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
     private OutputStream outputStream = null;
-    
+    private DataOutputStream dataOutputStream;    
+
     public ServerConnection(int port, String host) throws IOException{
         Socket socket = new Socket(host, port);
         objectOut = new ObjectOutputStream(socket.getOutputStream());
@@ -31,7 +30,7 @@ public class ServerConnection implements Runnable{
     }
 
     public void run(){
-        setupSerialConnection();
+        setupWifiConnection();        
         System.out.println("Entering main loop");
         while(true){
             try{
@@ -52,68 +51,26 @@ public class ServerConnection implements Runnable{
 
     private void sendToArduino(Message message){
         try{
-            outputStream.write(message.getI());
-            outputStream.flush();
+            dataOutputStream.writeByte(message.getI());
+            dataOutputStream.flush();
+            System.out.println(message.getI()+" has been sent to arduino");
         }
         catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    private void setupSerialConnection(){
-        ArrayList<String> portsList = new ArrayList<String>();
-        Enumeration ports = CommPortIdentifier.getPortIdentifiers();
-        HashMap portMap = new HashMap();
-            while(ports.hasMoreElements()){
-                CommPortIdentifier currentPort = (CommPortIdentifier) ports.nextElement();
-                if(currentPort.getPortType()==CommPortIdentifier.PORT_SERIAL){
-                    portMap.put(currentPort.getName(), currentPort);
-                    portsList.add(currentPort.getName());
-                    System.out.println("Found port "+currentPort.getName());
-                }
-            }
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Choose a port: ");
-        String selectedPort = sc.nextLine();
-
-        CommPortIdentifier selectedPortIdentifier = (CommPortIdentifier) portMap.get(selectedPort);
-        CommPort commPort = null;
-        SerialPort serialPort = null;        
-
+    public void setupWifiConnection(){
         try{
-            commPort = selectedPortIdentifier.open(selectedPort, 2000); // 2000 - timeout   
-            serialPort = (SerialPort) commPort;
-            System.out.println(serialPort+" opened successfully");
-        }
-        catch(PortInUseException e){
-            System.out.println("port "+selectedPort+" in use");
-            return;
-        }
-        catch(Exception e){
-            System.out.println("Failed to open port");
-            e.printStackTrace();
-            return;
-        }
-
-        try{
-            outputStream = serialPort.getOutputStream();
-            System.out.println("Stream opened successfully");
-            outputStream.flush();
+            Socket socket = new Socket(arduinoAddress, arduinoPort);
+            System.out.println("Connected to ardunio "+arduinoAddress+", port "+arduinoPort);
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            System.out.println("DataOutputStream to arduino is set");
         }
         catch(IOException e){
+            System.out.println("Could not connect to arduino");
             e.printStackTrace();
-            return;
-        }            
-
-        try{
-            Thread.sleep(4000);             
-            return;         
-        } 
-        catch(InterruptedException e){             
-            e.printStackTrace();             
-            return;         
         }
-
     }
 
 }
