@@ -5,21 +5,23 @@ import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 
 public class ClientConnection implements Runnable{
     
     private ServerListener serverListener;
-    private ObjectInputStream objectIn;
-    private ObjectOutputStream objectOut;
+    private DataInputStream dataIn;
+    private DataOutputStream dataOut;
     private String toString;
 
     public ClientConnection(Socket socket, ServerListener serverListener) throws IOException{
         this.serverListener = serverListener;
         System.out.println("creating streams for the new client");
-        objectOut = new ObjectOutputStream(socket.getOutputStream());
-        objectOut.flush();
-        objectIn = new ObjectInputStream(socket.getInputStream());
+        dataOut = new DataOutputStream(socket.getOutputStream());
+        dataOut.flush();
+        dataIn = new DataInputStream(socket.getInputStream());
         serverListener.getList().add(this);
         toString = socket.getInetAddress().toString();       
     }
@@ -27,10 +29,11 @@ public class ClientConnection implements Runnable{
     public void run(){
         while(true){
             try{
-                Object obj = objectIn.readObject();
-                System.out.println("Received an object");
-                serverListener.sendToAll(obj);
-                System.out.println("The new object has been sent to all");      
+                int message = dataIn.readByte();
+                System.out.println("Received a letter "+(char) message);
+                String messageString = String.valueOf((char) message);
+                serverListener.sendToAll(messageString);
+                System.out.println("The letter has been sent to all");      
             }
             catch(EOFException e){
                 serverListener.getList().remove(this);
@@ -40,9 +43,9 @@ public class ClientConnection implements Runnable{
                 serverListener.getList().remove(this);
                 break;
             }
-            catch(IOException | ClassNotFoundException e){
+            catch(IOException e){
                 e.printStackTrace();
-                System.out.println("Error while sending object to all connected clients");
+                System.out.println("Error while sending message to all connected clients");
                 continue;
             }
             catch(NullPointerException e){
@@ -53,12 +56,12 @@ public class ClientConnection implements Runnable{
         }
     }    
 
-    public ObjectInputStream getObjectIn(){
-        return objectIn;     
+    public DataInputStream getDataIn(){
+        return dataIn;     
     }
 
-    public ObjectOutputStream getObjectOut(){
-        return objectOut;
+    public DataOutputStream getDataOut(){
+        return dataOut;
     }
 
     public String toString(){

@@ -37,10 +37,10 @@ public class ServerListener implements Runnable{
         }
     }
 
-    public void sendToAll(Object obj) throws IOException{
+    public void sendToAll(String message) throws IOException{
         for(ClientConnection clientConnection : list){
-            clientConnection.getObjectOut().writeObject(obj);
-            clientConnection.getObjectOut().flush();
+            clientConnection.getDataOut().writeBytes(message);
+            //clientConnection.getObjectOut().flush();
         }   
     }    
 

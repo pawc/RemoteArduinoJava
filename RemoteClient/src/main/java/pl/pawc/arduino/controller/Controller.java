@@ -6,6 +6,8 @@ import javafx.scene.control.RadioButton;
 
 import pl.pawc.arduino.shared.Message;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import java.net.Socket;
@@ -18,18 +20,18 @@ public class Controller{
     private @FXML RadioButton LEDswitch;
 
     private boolean connected;
-    private ObjectOutputStream objOut;
-    private ObjectInputStream objIn;
+    private DataOutputStream dataOut;
+    private DataInputStream dataIn;
     private Socket socket;
 
     public void initialize(){
     
         LEDswitch.setOnAction(event->{
             if(LEDswitch.isSelected()){
-                sendMessage(1);
+                sendMessage("a");
             }
             if(!LEDswitch.isSelected()){
-                sendMessage(0);
+                sendMessage("b");
             }
         });
 
@@ -37,10 +39,10 @@ public class Controller{
         connectButton.setOnAction(event->{
           if(!connected){
             try{
-                socket = new Socket("kritsit.ddns.net", 6000);
-                objOut = new ObjectOutputStream(socket.getOutputStream());
-                objOut.flush();
-                objIn = new ObjectInputStream(socket.getInputStream());
+                socket = new Socket("localhost", 6000);
+                dataOut = new DataOutputStream(socket.getOutputStream());
+                //dataOut.flush();
+                dataIn = new DataInputStream(socket.getInputStream());
                 connected = true;
                 connectButton.setText("Disconnect");
             }
@@ -50,8 +52,8 @@ public class Controller{
           }
           else{
             try{
-                objOut.close();
-                objIn.close();
+                dataOut.close();
+                dataIn.close();
                 socket.close();
                 connected=false;
                 connectButton.setText("Connect");
@@ -70,18 +72,18 @@ public class Controller{
         return connected;
     }
 
-    public void sendMessage(int i){
+    public void sendMessage(String message){
         if(connected){
-            Message message = new Message(i);
+            //Message message = new Message(i);
             try{        
-                objOut.writeObject(message);
-                objOut.flush();
+                dataOut.writeBytes(message);
+                dataOut.flush();
             }
             catch(IOException e){
                 e.printStackTrace();
                 return;
             }
-            System.out.println("Message has been sent: "+i);
+            System.out.println("Message has been sent: "+message);
         }
         else{
             System.out.println("You is not connected");

@@ -40,9 +40,9 @@ public class Main extends Application {
                 scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                     if(controller.getConnected()){ 
                         switch(event.getCode().toString()){
-                        case "LEFT" : controller.sendMessage(2); break;
-                        case "RIGHT" : controller.sendMessage(3); break;
-                        case "ENTER" : controller.sendMessage(4); break;
+                        case "LEFT" : controller.sendMessage("c"); break;
+                        case "RIGHT" : controller.sendMessage("d"); break;
+                        //case "ENTER" : controller.sendMessage(4); break;
                         }
                     }
                     else{
