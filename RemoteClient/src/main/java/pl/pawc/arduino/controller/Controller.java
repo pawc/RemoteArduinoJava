@@ -39,7 +39,7 @@ public class Controller{
         connectButton.setOnAction(event->{
           if(!connected){
             try{
-                socket = new Socket("localhost", 6000);
+                socket = new Socket("kritsit.ddns.net", 6000);
                 dataOut = new DataOutputStream(socket.getOutputStream());
                 //dataOut.flush();
                 dataIn = new DataInputStream(socket.getInputStream());
