@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
 import java.util.Vector;
+import java.io.DataOutputStream;
 
 public class ServerListener implements Runnable{
 
@@ -37,9 +38,11 @@ public class ServerListener implements Runnable{
         }
     }
 
-    public void sendToAll(String message) throws IOException{
+    public void sendToAll(String message, DataOutputStream dataOut) throws IOException{
         for(ClientConnection clientConnection : list){
+            if(dataOut!=clientConnection.getDataOut()){
             clientConnection.getDataOut().writeBytes(message);
+            }
             //clientConnection.getObjectOut().flush();
         }   
     }    

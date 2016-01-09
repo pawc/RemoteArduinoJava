@@ -32,7 +32,7 @@ public class ClientConnection implements Runnable{
                 int message = dataIn.readByte();
                 System.out.println("Received a letter "+(char) message);
                 String messageString = String.valueOf((char) message);
-                serverListener.sendToAll(messageString);
+                serverListener.sendToAll(messageString, dataOut);
                 System.out.println("The letter has been sent to all");      
             }
             catch(EOFException e){

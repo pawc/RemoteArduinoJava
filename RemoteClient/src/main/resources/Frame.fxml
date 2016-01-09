@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="134.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="151.0" prefWidth="218.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="connectButton" layoutX="37.0" layoutY="14.0" mnemonicParsing="false" text="Connect" />
-      <RadioButton fx:id="LEDswitch" layoutX="22.0" layoutY="55.0" mnemonicParsing="false" text="LED switch" />
+      <Button fx:id="connectButton" layoutX="73.0" layoutY="14.0" mnemonicParsing="false" text="Connect" />
+      <RadioButton fx:id="LEDswitch" layoutX="61.0" layoutY="56.0" mnemonicParsing="false" text="LED switch" />
+      <Label layoutX="25.0" layoutY="86.0" prefHeight="25.0" prefWidth="158.0" text="servo - left/right arrows" />
+      <Label layoutX="25.0" layoutY="104.0" prefHeight="11.0" prefWidth="158.0" text="buzzer - up arrow" />
+      <Label layoutX="25.0" layoutY="119.0" text="temperature - spacebar" />
    </children>
 </AnchorPane>
