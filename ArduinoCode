@@ -21,7 +21,7 @@ void loop() {
 
         if (Serial.available() > 0) {
                 incomingByte = Serial.read();
-                Serial.println(incomingByte);
+                //Serial.println(incomingByte);
                 if(incomingByte==97){
                   digitalWrite(8, HIGH);
                 }
