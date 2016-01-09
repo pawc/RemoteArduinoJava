@@ -1,13 +1,13 @@
 #include <Servo.h>
 
-int incomingByte = 0;   // for incoming serial data
+int incomingByte = 0; 
 Servo myservo;
 int pos = 90;
 
 void setup() {
           myservo.attach(9);
         myservo.write(pos);
-        Serial.begin(115200);     // opens serial port, sets data rate to 9600 bps
+        Serial.begin(115200); 
         delay(5000);
         Serial.write("AT+CIPMUX=1\r\n");
         delay(5000);
