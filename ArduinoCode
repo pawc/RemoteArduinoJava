@@ -1,39 +1,44 @@
 #include <Servo.h>
+
+int incomingByte = 0;   // for incoming serial data
 Servo myservo;
 int pos = 90;
 
-void setup(){
-  pinMode(8,OUTPUT);
-  myservo.attach(9);
-  myservo.write(pos);
-  Serial.begin(115200);
-  delay(5000);
-  Serial.write("AT+CIPMUX=1\r\n");
-  delay(5000);
-  Serial.write("AT+CIPSTART=4,\"TCP\",\"kritsit.ddns.net\",6000\r\n");
-  delay(5000);
+void setup() {
+          myservo.attach(9);
+        myservo.write(pos);
+        Serial.begin(115200);     // opens serial port, sets data rate to 9600 bps
+        delay(5000);
+        Serial.write("AT+CIPMUX=1\r\n");
+        delay(5000);
+        Serial.write("AT+CIPSTART=4,\"TCP\",\"kritsit.ddns.net\",6000\r\n");
+        delay(5000);
+        pinMode(8, OUTPUT);
+       
 }
 
 void loop() {
-  if(Serial.available()>0){
-   if(Serial.find("a")){
-      digitalWrite(8, HIGH);
-   }
-   if(Serial.find("b")){
-      digitalWrite(8, LOW);
-   }
 
-   if(Serial.find("c")){
-      pos+=20;
-      myservo.write(pos);
-   }
+        if (Serial.available() > 0) {
+                incomingByte = Serial.read();
+                Serial.println(incomingByte);
+                if(incomingByte==97){
+                  digitalWrite(8, HIGH);
+                }
+                if(incomingByte==98){
+                  digitalWrite(8, LOW);
+                }
 
-   if(Serial.find("d")){
-      pos-=20;
-      myservo.write(pos);
-   }
+                if(incomingByte==35){
+                  pos+=20;
+                  myservo.write(pos);
+                }
 
-   
-  }
-   
+                if(incomingByte==36){
+                  pos-=20;
+                  myservo.write(pos);
+                }
+                
+        }
 }
+ 
