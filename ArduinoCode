@@ -5,7 +5,7 @@ Servo myservo;
 int pos = 90;
 
 void setup() {
-          myservo.attach(9);
+        myservo.attach(9);
         myservo.write(pos);
         Serial.begin(115200); 
         delay(5000);
@@ -14,6 +14,7 @@ void setup() {
         Serial.write("AT+CIPSTART=4,\"TCP\",\"kritsit.ddns.net\",6000\r\n");
         delay(5000);
         pinMode(8, OUTPUT);
+        pinMode(10, OUTPUT);
        
 }
 
@@ -38,7 +39,25 @@ void loop() {
                   pos-=20;
                   myservo.write(pos);
                 }
-                
+
+                if(incomingByte==37){
+                    unsigned char i, j ;// define variables
+                    for (i = 0; i <80; i++) // Wen a frequency sound
+                      {
+                        digitalWrite (10, HIGH) ;// send voice
+                        delay (1) ;// Delay 1ms
+                        digitalWrite (10, LOW) ;// do not send voice
+                        delay (1) ;// delay ms
+                      }
+                      for (i = 0; i <100; i++) // Wen Qie out another frequency sound
+                      {
+                        digitalWrite (10, HIGH) ;// send voice
+                        delay (2) ;// delay 2ms
+                        digitalWrite (10, LOW) ;// do not send voice
+                        delay (2) ;// delay 2ms
+                      }
+                    
+                }
+         
         }
 }
- 
