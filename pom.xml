@@ -10,7 +10,6 @@
   <url>kritsit.ddns.net</url>
   <modules>
     <module>Server</module>
-    <module>ArduinoClient</module>
     <module>RemoteClient</module>
   </modules>
 
