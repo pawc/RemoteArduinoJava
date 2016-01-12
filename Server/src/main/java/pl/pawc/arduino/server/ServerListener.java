@@ -41,9 +41,10 @@ public class ServerListener implements Runnable{
     public void sendToAll(String message, DataOutputStream dataOut) throws IOException{
         for(ClientConnection clientConnection : list){
             if(dataOut!=clientConnection.getDataOut()){
-            clientConnection.getDataOut().writeBytes(message);
-            }
-            //clientConnection.getObjectOut().flush();
+            clientConnection.getDataOut().writeBytes(message+"\n");
+                clientConnection.getDataOut().flush();
+	    }
+            
         }   
     }    
 

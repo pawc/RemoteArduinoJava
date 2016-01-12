@@ -5,14 +5,15 @@ import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 
 public class ClientConnection implements Runnable{
     
     private ServerListener serverListener;
-    private DataInputStream dataIn;
+    private BufferedReader bfr;
     private DataOutputStream dataOut;
     private String toString;
 
@@ -21,7 +22,7 @@ public class ClientConnection implements Runnable{
         System.out.println("creating streams for the new client");
         dataOut = new DataOutputStream(socket.getOutputStream());
         dataOut.flush();
-        dataIn = new DataInputStream(socket.getInputStream());
+        bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         serverListener.getList().add(this);
         toString = socket.getInetAddress().toString();       
     }
@@ -29,10 +30,10 @@ public class ClientConnection implements Runnable{
     public void run(){
         while(true){
             try{
-                int message = dataIn.readByte();
-                System.out.println("Received a letter "+(char) message);
-                String messageString = String.valueOf((char) message);
-                serverListener.sendToAll(messageString, dataOut);
+                String message = bfr.readLine();
+		if(message==null) break;
+                System.out.println("Received a message: "+message);
+                serverListener.sendToAll(message, dataOut);
                 System.out.println("The letter has been sent to all");      
             }
             catch(EOFException e){
@@ -54,10 +55,11 @@ public class ClientConnection implements Runnable{
                 break;
             }
         }
+	serverListener.getList().remove(this);
     }    
 
-    public DataInputStream getDataIn(){
-        return dataIn;     
+    public BufferedReader getBfr(){
+        return bfr;     
     }
 
     public DataOutputStream getDataOut(){
