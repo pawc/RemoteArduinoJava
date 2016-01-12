@@ -1,20 +1,33 @@
 #include <Servo.h>
+#include <OneWire.h>
+#include <DS18B20.h>
+
+#define ONEWIRE_PIN 2
+byte address[8] = {0x28, 0xB1, 0x6D, 0xA1, 0x3, 0x0, 0x0, 0x11};
+OneWire onewire(ONEWIRE_PIN);
+DS18B20 sensors(&onewire);
 
 int incomingByte = 0; 
 Servo myservo;
 int pos = 90;
 
 void setup() {
-        myservo.attach(9);
-        myservo.write(pos);
+
         Serial.begin(115200); 
         delay(5000);
         Serial.write("AT+CIPMUX=1\r\n");
         delay(5000);
         Serial.write("AT+CIPSTART=4,\"TCP\",\"kritsit.ddns.net\",6000\r\n");
         delay(5000);
-        pinMode(8, OUTPUT);
+
+        myservo.attach(9);
+        myservo.write(pos);
+
+	pinMode(8, OUTPUT);
         pinMode(10, OUTPUT);
+
+	sensors.begin();
+  	sensors.request(address);
        
 }
 
@@ -23,6 +36,13 @@ void loop() {
         if (Serial.available() > 0) {
                 incomingByte = Serial.read();
                 //Serial.println(incomingByte);
+		//asci:
+		//97 a
+		//98 b
+		//35 #
+		//36 $
+		//37 %
+		//38 &
                 if(incomingByte==97){
                   digitalWrite(8, HIGH);
                 }
@@ -58,6 +78,17 @@ void loop() {
                       }
                     
                 }
-         
-        }
+
+		if(incomingByte==38)
+		sensors.request(address);
+		if (sensors.available()){
+   			float temperature = sensors.readTemperature(address);
+
+			Serial.write("AT+CIPSEND=4,9\r\n");
+			Serial.write("T:"+temperature+"\r\n");
+
+       			delay(2000);
+						 
+       		}
+
 }
