@@ -10,9 +10,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
 import java.net.Socket;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+
+import pl.pawc.arduino.Listener;
 
 public class Controller{
 
@@ -21,8 +26,10 @@ public class Controller{
 
     private boolean connected;
     private DataOutputStream dataOut;
-    private DataInputStream dataIn;
+    private BufferedReader bfr;
     private Socket socket;
+	private Thread thread;
+
 
     public void initialize(){
     
@@ -42,7 +49,9 @@ public class Controller{
                 socket = new Socket("kritsit.ddns.net", 6000);
                 dataOut = new DataOutputStream(socket.getOutputStream());
                 //dataOut.flush();
-                dataIn = new DataInputStream(socket.getInputStream());
+                BufferedReader bfr = new BufferedReader(new InputStreamReader((socket.getInputStream())));
+				thread = new Thread(new Listener(bfr, this));
+				thread.start();
                 connected = true;
                 connectButton.setText("Disconnect");
             }
@@ -52,8 +61,9 @@ public class Controller{
           }
           else{
             try{
+				thread.interrupt();
                 dataOut.close();
-                dataIn.close();
+                bfr.close();
                 socket.close();
                 connected=false;
                 connectButton.setText("Connect");
@@ -89,5 +99,9 @@ public class Controller{
             System.out.println("You is not connected");
         }
     }
+
+	public void printTemperature(String temperature){
+
+	}
 
 }
